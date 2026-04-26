@@ -192,6 +192,7 @@ def route_question(question):
         or "summary" in q
         or "medication" in q
         or "lab" in q
+        or "name" in q
     ):
         return "REPORT"
 

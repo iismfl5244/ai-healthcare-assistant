@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain_ollama import ChatOllama, OllamaEmbeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -10,13 +10,18 @@ import tempfile
 import pandas as pd
 import os
 
+st.set_page_config(
+    page_title="Mike Leikam - Capstone - AI Healthcare Assistant", layout="wide"
+)
+
+llm = ChatOpenAI(
+    model="gpt-4o-mini", temperature=0.1, api_key=st.secrets["OPENAI_API_KEY"]
+)
 
 # -----------------------------
 # Streamlit setup
 # -----------------------------
-st.set_page_config(
-    page_title="Mike Leikam - Capstone - AI Healthcare Assistant", layout="wide"
-)
+
 
 st.title("Mike Leikam - Capstone - AI Healthcare Assistant")
 st.write(
@@ -40,7 +45,7 @@ st.sidebar.write("📊 Excel Interaction Log")
 # -----------------------------
 # Models and tools
 # -----------------------------
-llm = ChatOllama(model="llama3.2:latest", temperature=0.1)
+
 pubmed = PubmedQueryRun()
 
 
@@ -67,12 +72,11 @@ def create_retriever(uploaded_file):
 
     loader = PyPDFLoader(temp_path)
     documents = loader.load()
-
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 
     chunks = splitter.split_documents(documents)
 
-    embeddings = OllamaEmbeddings(model="nomic-embed-text")
+    embeddings = OpenAIEmbeddings(api_key=st.secrets["OPENAI_API_KEY"])
     vectorstore = FAISS.from_documents(chunks, embeddings)
 
     return vectorstore.as_retriever()

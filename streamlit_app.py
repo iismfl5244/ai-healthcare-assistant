@@ -101,6 +101,11 @@ If the user asks to summarize the report, provide a concise summary of:
 - notable exam findings
 - recommendations if present
 
+If the user asks for the patient's name, look for labels such as:
+Patient:
+Name:
+Patient Name:
+
 If the answer is not in the report, say:
 "I cannot find that information in the report."
 
